@@ -1,3 +1,5 @@
+import { sampleImages } from "./sampleImages";
+
 /**
  * Dados de exemplo apenas para demonstrar o layout do relatório.
  * Não tratar como cartela fixa — futuramente cada usuário receberá dados próprios
