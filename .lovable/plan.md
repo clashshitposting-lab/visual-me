@@ -1,82 +1,86 @@
-## VisuMe — MVP Mockado (final, com seus ajustes)
+## VisuMe — Melhoria do MVP: imagens de exemplo + PDF baixável
 
-Plataforma mobile first de análise visual personalizada. Tudo mockado: sem IA, sem pagamento, sem backend, sem PDF real.
+Escopo restrito a `/resultado/mock` e componentes do relatório. Sem novas rotas, backend, IA, Supabase ou pagamento.
 
-### Rotas (somente estas 6)
+### PARTE 1 — Imagens de exemplo
 
-`/` · `/produtos` · `/checkout` · `/upload` · `/processando` · `/resultado/mock`
+**Estratégia de imagens**: usar Unsplash com URLs determinísticas (`https://images.unsplash.com/photo-<id>?w=800&q=80&auto=format&fit=crop`) curadas — IDs fixos, não aleatórios, para evitar carregar pessoas inadequadas. Cada `<img>` tem `loading="lazy"`, `onError` que troca por um fallback gradient (mantém o layout) e selo "Imagem demonstrativa".
 
-### Ajustes incorporados
+**Curadoria mínima** (5 retratos editoriais neutros + 8 de cabelo/barba) — IDs fixos definidos em `src/data/sampleImages.ts`:
+- `portraitMain` — 1 retrato editorial neutro para a foto principal.
+- `colorPortraits[5]` — 5 retratos para o carrossel "melhores cores".
+- `avoidPortraits[3]` — 3 retratos para "cores que pesam".
+- `haircuts[4]` e `beards[4]` — referências de corte/barba.
 
-1. **Checkout — order bumps "Em breve"**: aparecem visualmente, mas com `disabled` real (sem clique, sem toggle), opacidade reduzida, badge "Em breve" e tooltip. Apenas 4 são selecionáveis: Guardar resultado por mais tempo, PDF Premium, Prévia visual extra (badge Beta, ainda selecionável), Nova análise com novas fotos.
-2. **Processando**: stepper avança por ~8s, depois habilita o botão "Ver resultado mockado". **Sem auto-redirect** — só navega no clique.
-3. **Resultado /resultado/mock**: tratado como peça principal. Layout tipo relatório editorial premium, não listagem. Hero do relatório, tipografia display, divisores ornamentais, paletas em grid editorial, carrossel de simulações com framing tipo polaroid, box "instrução para barbeiro" como citação destacada, banner de expiração elegante, abas (Resumo / Cores / Cabelo & Barba / Guia prático / PDF) bem espaçadas.
-4. **Carrosséis de simulações**: cada item exibe o aviso explícito *"Imagem ilustrativa / placeholder. Futuramente a IA vai gerar essa simulação com a foto enviada."*
-5. **Botão "Baixar PDF"**: apenas `toast.info` com "PDF real será gerado na próxima etapa…". Sem geração.
-6. **Botão "Salvar resultado"**: apenas `toast.success` informativo. Sem backend.
-7. **Mobile first rigoroso**: layouts padrão `flex-col` / `grid-cols-1`, breakpoints `sm:` e `lg:` apenas para enriquecer no desktop. Tipografia escalada com `clamp`. Botões com alvo ≥44px. Carrosséis com swipe nativo embla.
-8. **Sem rotas extras** além das 6.
+**Componente `SampleImage`** (`src/components/visume/SampleImage.tsx`): wrapper `<img>` com fallback automático para `<div>` gradient quando `onError` dispara. Mantém aspect-ratio e selo opcional.
 
-### Identidade visual
+**Atualizações**:
 
-- Tokens semânticos em `src/styles.css` (oklch): `--primary` azul petróleo, `--accent` vinho queimado, `--background` off-white nude, `--foreground` grafite, `--success` verde suave, `--destructive` vermelho suave, `--nude`, sombras `--shadow-soft` e `--shadow-premium`.
-- Fontes: Fraunces (display, títulos) + Inter (corpo) carregadas via `<link>` no `__root.tsx`.
-- Cards arredondados (`rounded-2xl`/`rounded-3xl`), sombras suaves, muito respiro.
-- Selos `MockBadge` reutilizáveis ("Exemplo visual" / "Exemplo de resultado").
+1. `ResultHeader.tsx` — substitui o placeholder atual pelo `SampleImage` (retrato editorial), mantém `MockBadge` "Foto exemplo" no canto.
 
-### Estrutura de arquivos
+2. `VisualSimulationCarousel.tsx` — cada card vira:
+   - `SampleImage` de fundo (aspect 4/5).
+   - Overlay inferior com swatch da cor + nome + HEX.
+   - Tag "Combina"/"Evitar" no topo.
+   - Legenda: "Simulação placeholder" (good) ou "Exemplo demonstrativo" (avoid).
+   - Mantém o aviso "Imagem ilustrativa / placeholder. Futuramente a IA vai gerar essa simulação com a foto enviada."
+   - Itens passam a aceitar `imageUrl` opcional. `mockAnalysisResult.colorAnalysis.bestSimulation` e `avoidSimulation` ganham `imageUrl` apontando para os IDs curados.
 
-**Dados** (`src/data/`)
-- `products.ts` — 3 produtos.
-- `orderBumps.ts` — 7 upsells, flag `available` controlando seleção.
-- `faq.ts` — 5 perguntas.
-- `processingSteps.ts` — steps + mensagens rotativas.
-- `mockAnalysisResult.ts` — objeto `mockAnalysisResult` conforme estrutura solicitada (`isMock`, `colorAnalysis`, `hairAnalysis`, `practicalGuide`).
+3. `HairRecommendationCard.tsx` — adicionar `SampleImage` topo do card com aviso "Imagem ilustrativa. Na versão final, a IA gerará uma simulação com a foto enviada." Os 4 cortes e 4 barbas em `mockAnalysisResult.hairAnalysis` recebem `imageUrl`.
 
-**Estado** (`src/context/VisumeContext.tsx`)
-Provider com produto selecionado, bumps marcados e uploads (preview local via `URL.createObjectURL`). Fallback: checkout sem produto → assume Combo Completo.
+### PARTE 2 — PDF baixável
 
-**Componentes** (`src/components/visume/`)
-SiteHeader, SiteFooter, MockBadge, SectionDisclaimer, LandingHero, HowItWorks, ExampleShowcase, Differentials, ProductPricingCards, FAQSection, CheckoutSummary, OrderBumpCard, PaymentMethodSelector, UploadPhotoCard, ProcessingStepper, ResultHeader, ResultExpirationBanner, ColorSwatch, ColorPaletteCard, ColorAnalysisSummary, VisualSimulationCarousel, HairRecommendationCard, AvoidRecommendationCard, BarberInstructionBox, PracticalGuideCard, PdfDownloadButton.
+**Biblioteca**: `jspdf` (pure JS, sem deps nativas, funciona no browser e é estável). Sem `html2canvas` — montaremos o PDF programaticamente para garantir layout limpo, leve e independente de fontes externas.
 
-**Rotas** (`src/routes/`)
-- `__root.tsx` atualizado com fontes, `<Toaster />` da sonner, `VisumeProvider`, header/footer compartilhados.
-- `index.tsx` — Landing.
-- `produtos.tsx`, `checkout.tsx`, `upload.tsx`, `processando.tsx`, `resultado.mock.tsx` (rota `/resultado/mock`).
+**Novo arquivo**: `src/lib/generateMockPdf.ts`
+- Função `generateMockPdf()` assíncrona.
+- Cria documento A4, fontes built-in (helvetica), paleta sóbria (azul petróleo `#1F5B5B`, vinho `#8A3F5C`, grafite `#2D3436`).
+- Helpers internos: `addHeading`, `addParagraph`, `addSwatchRow(colors[])`, `addBulletList`, `addPageIfNeeded(yCursor)`.
+- Lê dados de `mockAnalysisResult` para manter consistência com a tela.
 
-Cada rota define seu próprio `head()` em PT-BR (title, description, og).
+**Estrutura do PDF** (`visume-relatorio-exemplo.pdf`):
+1. **Capa**: faixa decorativa, "VisuMe", "Relatório visual personalizado", selo "Exemplo visual", parágrafo demonstrativo.
+2. **Resumo**: Combo Completo, Confiança Média, melhor direção visual.
+3. **Análise de cores**: estação, temperatura, intensidade, profundidade, contraste, subtom, paleta "ficam melhor" (swatches coloridos + nome + HEX), paleta "evitar".
+4. **Cabelo/Barba**: formato de rosto, textura, cortes recomendados, cortes a evitar, barbas recomendadas, box "Como pedir ao barbeiro".
+5. **Guia prático**: comprar, evitar, salão/barbeiro, checklist.
+6. **Rodapé fixo** em todas as páginas: aviso completo sobre simulações aproximadas + "VisuMe — exemplo demonstrativo" + paginação.
 
-### Detalhes por página
+### PARTE 3 — UX do botão
 
-**Landing**: Hero com headline display + subhead + dois CTAs (primário→`/produtos`, secundário→`/resultado/mock`). HowItWorks (4 passos). ExampleShowcase com cards mockados e selo "Exemplo visual". Differentials (6 itens). Pricing (3 produtos). FAQ accordion.
+`PdfDownloadButton.tsx` e botão "Baixar PDF" do `ResultHeader.tsx` ganham:
+- Estado `isGenerating`.
+- Label muda para "Gerando PDF..." com spinner (`Loader2`) e fica `disabled`.
+- Sucesso: `toast.success("PDF baixado com sucesso.")`.
+- Erro: `toast.error("Não foi possível gerar o PDF agora. Tente novamente.")`.
+- Import dinâmico de `jspdf` (`await import("jspdf")`) para não inflar o bundle inicial.
 
-**Produtos**: 3 cards premium com highlights, destaque visual no Combo. Botão grava no contexto e navega para `/checkout`.
+**Novo card informativo** ao lado do botão (em `ResultHeader.tsx` e/ou aba PDF): bloco compacto com ícone + "PDF demonstrativo disponível" + texto explicativo sobre versão final personalizada.
 
-**Checkout**: Resumo do produto + cupom mockado (qualquer texto exibe "Cupom aplicado" visual, sem alterar valor) + 7 OrderBumpCard (3 disabled com tooltip "Em breve"), total dinâmico (produto + bumps marcados), seletor visual Pix/Cartão/Apple-Google Pay, botão "Finalizar pedido" → `/upload`.
+### PARTE 4 — Escopo mantido
 
-**Upload**: Instruções, 4 UploadPhotoCard (frente/perfil esq/perfil dir/extra), preview local. Botão "Continuar para análise" → `/processando`.
+Sem novas rotas, sem backend, sem auth, sem admin, sem histórico, sem pagamento real, sem IA, sem Supabase. Sem PDF Premium. Avisos de mock preservados em todos os pontos.
 
-**Processando**: ProcessingStepper anima os 6 status, mensagens rotativas a cada ~1.4s. Após ~8s habilita o botão "Ver resultado mockado". **Não navega sozinho.**
+### Arquivos afetados
 
-**Resultado**: ResultHeader (título display, MockBadge, disclaimer, foto principal placeholder elegante, ações Baixar PDF / Salvar resultado, ResultExpirationBanner). Tabs:
-  - **Resumo**: cards (Tipo de análise, Confiança, Melhor direção visual, Principais recomendações).
-  - **Cores**: ColorAnalysisSummary, ColorPaletteCard "Exemplo: cores que ficam melhor", ColorPaletteCard "Exemplo: cores para evitar", VisualSimulationCarousel "você usando suas melhores cores" com aviso de placeholder, VisualSimulationCarousel "cores que podem pesar".
-  - **Cabelo/Barba**: cards de características, lista de cortes recomendados, lista de cortes a evitar, barbas recomendadas, BarberInstructionBox em destaque.
-  - **Guia prático**: 6 PracticalGuideCard.
-  - **PDF**: PdfDownloadButton + disclaimer das simulações.
+**Novos**
+- `src/components/visume/SampleImage.tsx`
+- `src/components/visume/PdfInfoCard.tsx`
+- `src/data/sampleImages.ts`
+- `src/lib/generateMockPdf.ts`
 
-### Preparação futura
+**Editados**
+- `src/data/mockAnalysisResult.ts` — adiciona `imageUrl` em `bestSimulation`, `avoidSimulation`, `bestHaircuts`, `avoidHaircuts`, `beardStyles.recommended`.
+- `src/components/visume/ResultHeader.tsx` — foto principal real, botão com loading, info card.
+- `src/components/visume/VisualSimulationCarousel.tsx` — usa `SampleImage` + overlay swatch.
+- `src/components/visume/HairRecommendationCard.tsx` — imagem topo + aviso.
+- `src/components/visume/PdfDownloadButton.tsx` — estado de loading + chamada real.
+- `src/routes/resultado.mock.tsx` — passar nova prop / posicionar `PdfInfoCard` na aba PDF.
 
-Comentários `// TODO (futuro): Supabase Auth/DB/Storage · process-analysis · generate-visual-simulations · generate-pdf · cleanup-expired-results · pagamento real` em pontos relevantes. Sem implementação.
+### Dependências
 
-### Técnico
-
-- Stack: TanStack Start + Tailwind v4 + shadcn (já no projeto).
-- Sem dependências novas.
-- Sem rotas API, sem server functions.
-- Toasts via `sonner` (já instalada). Adiciona `<Toaster />` no `__root.tsx`.
-- Fontes via `<link>` Google Fonts em `__root.tsx`.
+- Adicionar `jspdf` (`bun add jspdf`). Pure JS, ~200kb, sem nativos — compatível com o runtime do projeto e carregado dinamicamente apenas quando o usuário clica.
 
 ### Resultado
 
-Fluxo Landing → Produtos → Checkout → Upload → Processando → Resultado totalmente navegável, mobile first, premium e pronto para evoluir.
+`/resultado/mock` fica mais editorial e visual com fotos exemplo claramente rotuladas, e o botão "Baixar PDF" gera de fato um arquivo `visume-relatorio-exemplo.pdf` bonito, com toasts de loading/sucesso/erro e card explicativo sobre o caráter demonstrativo.
