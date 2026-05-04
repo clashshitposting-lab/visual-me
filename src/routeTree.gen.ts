@@ -9,38 +9,135 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UploadRouteImport } from './routes/upload'
+import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as ProcessandoRouteImport } from './routes/processando'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResultadoMockRouteImport } from './routes/resultado.mock'
 
+const UploadRoute = UploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutosRoute = ProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcessandoRoute = ProcessandoRouteImport.update({
+  id: '/processando',
+  path: '/processando',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResultadoMockRoute = ResultadoMockRouteImport.update({
+  id: '/resultado/mock',
+  path: '/resultado/mock',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/processando': typeof ProcessandoRoute
+  '/produtos': typeof ProdutosRoute
+  '/upload': typeof UploadRoute
+  '/resultado/mock': typeof ResultadoMockRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/processando': typeof ProcessandoRoute
+  '/produtos': typeof ProdutosRoute
+  '/upload': typeof UploadRoute
+  '/resultado/mock': typeof ResultadoMockRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/processando': typeof ProcessandoRoute
+  '/produtos': typeof ProdutosRoute
+  '/upload': typeof UploadRoute
+  '/resultado/mock': typeof ResultadoMockRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/checkout'
+    | '/processando'
+    | '/produtos'
+    | '/upload'
+    | '/resultado/mock'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/checkout'
+    | '/processando'
+    | '/produtos'
+    | '/upload'
+    | '/resultado/mock'
+  id:
+    | '__root__'
+    | '/'
+    | '/checkout'
+    | '/processando'
+    | '/produtos'
+    | '/upload'
+    | '/resultado/mock'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ProcessandoRoute: typeof ProcessandoRoute
+  ProdutosRoute: typeof ProdutosRoute
+  UploadRoute: typeof UploadRoute
+  ResultadoMockRoute: typeof ResultadoMockRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/upload': {
+      id: '/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produtos': {
+      id: '/produtos'
+      path: '/produtos'
+      fullPath: '/produtos'
+      preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/processando': {
+      id: '/processando'
+      path: '/processando'
+      fullPath: '/processando'
+      preLoaderRoute: typeof ProcessandoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +145,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resultado/mock': {
+      id: '/resultado/mock'
+      path: '/resultado/mock'
+      fullPath: '/resultado/mock'
+      preLoaderRoute: typeof ResultadoMockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutRoute: CheckoutRoute,
+  ProcessandoRoute: ProcessandoRoute,
+  ProdutosRoute: ProdutosRoute,
+  UploadRoute: UploadRoute,
+  ResultadoMockRoute: ResultadoMockRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
