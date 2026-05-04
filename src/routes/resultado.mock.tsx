@@ -134,6 +134,7 @@ function ResultadoMock() {
                       key={h.title}
                       title={h.title}
                       description={h.description}
+                      imageUrl={h.imageUrl}
                       tone="good"
                     />
                   ))}
@@ -162,6 +163,7 @@ function ResultadoMock() {
                       key={h.title}
                       title={h.title}
                       description={h.description}
+                      imageUrl={h.imageUrl}
                       tone="good"
                     />
                   ))}
