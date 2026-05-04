@@ -91,16 +91,16 @@ export const mockAnalysisResult: MockAnalysisResult = {
     explanation:
       "Exemplo de texto explicativo. Na versão final, esta explicação será gerada com base nas fotos enviadas.",
     bestSimulation: [
-      { title: "Azul marinho", color: "#1C2D3F" },
-      { title: "Azul petróleo", color: "#1F5B5B" },
-      { title: "Vinho queimado", color: "#8A3F5C" },
-      { title: "Verde sálvia", color: "#6F8B7B" },
-      { title: "Grafite", color: "#2D3436" },
+      { title: "Azul marinho", color: "#1C2D3F", imageUrl: sampleImages.colorPortraits[0] },
+      { title: "Azul petróleo", color: "#1F5B5B", imageUrl: sampleImages.colorPortraits[1] },
+      { title: "Vinho queimado", color: "#8A3F5C", imageUrl: sampleImages.colorPortraits[2] },
+      { title: "Verde sálvia", color: "#6F8B7B", imageUrl: sampleImages.colorPortraits[3] },
+      { title: "Grafite", color: "#2D3436", imageUrl: sampleImages.colorPortraits[4] },
     ],
     avoidSimulation: [
-      { title: "Amarelo vivo", color: "#F5C21A" },
-      { title: "Laranja quente", color: "#F47A22" },
-      { title: "Coral aceso", color: "#F06449" },
+      { title: "Amarelo vivo", color: "#F5C21A", imageUrl: sampleImages.avoidPortraits[0] },
+      { title: "Laranja quente", color: "#F47A22", imageUrl: sampleImages.avoidPortraits[1] },
+      { title: "Coral aceso", color: "#F06449", imageUrl: sampleImages.avoidPortraits[2] },
     ],
   },
   hairAnalysis: {
@@ -110,10 +110,10 @@ export const mockAnalysisResult: MockAnalysisResult = {
     hairVolume: "Médio/alto",
     direction: "Laterais controladas + volume equilibrado no topo",
     bestHaircuts: [
-      { title: "Degradê baixo com volume natural", description: "Mantém o volume no topo e equilibra o rosto." },
-      { title: "Cachos curtos naturais", description: "Valoriza a textura sem alongar demais." },
-      { title: "Degradê médio texturizado", description: "Movimento controlado e contorno limpo." },
-      { title: "Afro controlado/afilado", description: "Volume harmônico com a proporção do rosto." },
+      { title: "Degradê baixo com volume natural", description: "Mantém o volume no topo e equilibra o rosto.", imageUrl: sampleImages.haircuts[0] },
+      { title: "Cachos curtos naturais", description: "Valoriza a textura sem alongar demais.", imageUrl: sampleImages.haircuts[1] },
+      { title: "Degradê médio texturizado", description: "Movimento controlado e contorno limpo.", imageUrl: sampleImages.haircuts[2] },
+      { title: "Afro controlado/afilado", description: "Volume harmônico com a proporção do rosto.", imageUrl: sampleImages.haircuts[3] },
     ],
     avoidHaircuts: [
       { title: "Lateral muito raspada", description: "Pode alongar ainda mais o rosto." },
@@ -123,10 +123,10 @@ export const mockAnalysisResult: MockAnalysisResult = {
     ],
     beardStyles: {
       recommended: [
-        { title: "Barba natural curta", description: "Limpa e harmônica." },
-        { title: "Barba por fazer (3 a 5 dias)", description: "Casual e moderna." },
-        { title: "Cavanhaque definido", description: "Foca o queixo." },
-        { title: "Barba cheia curta", description: "Sofisticada e equilibrada." },
+        { title: "Barba natural curta", description: "Limpa e harmônica.", imageUrl: sampleImages.beards[0] },
+        { title: "Barba por fazer (3 a 5 dias)", description: "Casual e moderna.", imageUrl: sampleImages.beards[1] },
+        { title: "Cavanhaque definido", description: "Foca o queixo.", imageUrl: sampleImages.beards[2] },
+        { title: "Barba cheia curta", description: "Sofisticada e equilibrada.", imageUrl: sampleImages.beards[3] },
       ],
     },
     barberInstruction:
