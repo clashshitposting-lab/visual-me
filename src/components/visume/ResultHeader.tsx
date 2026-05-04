@@ -1,13 +1,28 @@
-import { Bookmark, Download, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Bookmark, Download, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { MockBadge } from "./MockBadge";
+import { SampleImage } from "./SampleImage";
+import { PdfInfoCard } from "./PdfInfoCard";
+import { sampleImages } from "@/data/sampleImages";
+import { generateMockPdf } from "@/lib/generateMockPdf";
 
 export function ResultHeader() {
-  const onPdf = () =>
-    toast.info("PDF mockado", {
-      description:
-        "PDF real será gerado na próxima etapa. Este botão já está preparado para integração futura.",
-    });
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const onPdf = async () => {
+    if (isGenerating) return;
+    setIsGenerating(true);
+    try {
+      await generateMockPdf();
+      toast.success("PDF baixado com sucesso.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Não foi possível gerar o PDF agora. Tente novamente.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const onSave = () =>
     toast.success("Resultado salvo", {
@@ -39,10 +54,20 @@ export function ResultHeader() {
           <div className="mt-6 flex flex-col gap-2 sm:flex-row">
             <button
               onClick={onPdf}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
+              disabled={isGenerating}
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-70"
             >
-              <Download className="h-4 w-4" />
-              Baixar PDF
+              {isGenerating ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Gerando PDF...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  Baixar PDF
+                </>
+              )}
             </button>
             <button
               onClick={onSave}
@@ -52,21 +77,25 @@ export function ResultHeader() {
               Salvar resultado
             </button>
           </div>
+
+          <div className="mt-5 max-w-md">
+            <PdfInfoCard />
+          </div>
         </div>
 
-        {/* Foto principal placeholder elegante */}
+        {/* Foto principal */}
         <div className="relative mx-auto w-full max-w-sm">
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/15 via-nude to-accent/15 shadow-sm">
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="text-center">
-                <div className="mx-auto h-24 w-24 rounded-full bg-card/80 ring-1 ring-border" />
-                <p className="mt-4 px-6 text-xs text-muted-foreground">
-                  Imagem ilustrativa do retrato analisado.
-                </p>
-              </div>
-            </div>
+            <SampleImage
+              src={sampleImages.portraitMain}
+              alt="Foto editorial de exemplo"
+              fallbackColor="#1F5B5B"
+            />
+            <span className="absolute right-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+              Foto exemplo
+            </span>
             <div className="absolute bottom-3 left-3 right-3">
-              <MockBadge>Exemplo</MockBadge>
+              <MockBadge>Imagem demonstrativa</MockBadge>
             </div>
           </div>
         </div>
