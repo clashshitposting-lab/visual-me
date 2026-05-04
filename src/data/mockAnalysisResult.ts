@@ -25,8 +25,8 @@ export type MockAnalysisResult = {
     idealNeutrals: ColorSwatch[];
     accentColors: ColorSwatch[];
     explanation: string;
-    bestSimulation: { title: string; color: string }[];
-    avoidSimulation: { title: string; color: string }[];
+    bestSimulation: { title: string; color: string; imageUrl?: string }[];
+    avoidSimulation: { title: string; color: string; imageUrl?: string }[];
   };
   hairAnalysis: {
     isExample: true;
@@ -34,10 +34,10 @@ export type MockAnalysisResult = {
     hairTexture: string;
     hairVolume: string;
     direction: string;
-    bestHaircuts: { title: string; description: string }[];
-    avoidHaircuts: { title: string; description: string }[];
+    bestHaircuts: { title: string; description: string; imageUrl?: string }[];
+    avoidHaircuts: { title: string; description: string; imageUrl?: string }[];
     beardStyles: {
-      recommended: { title: string; description: string }[];
+      recommended: { title: string; description: string; imageUrl?: string }[];
     };
     barberInstruction: string;
     stylingTips: string[];
