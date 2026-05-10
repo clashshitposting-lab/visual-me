@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as ProcessandoRouteImport } from './routes/processando'
+import { Route as MulherRouteImport } from './routes/mulher'
+import { Route as HomemRouteImport } from './routes/homem'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResultadoMockRouteImport } from './routes/resultado.mock'
@@ -29,6 +31,16 @@ const ProdutosRoute = ProdutosRouteImport.update({
 const ProcessandoRoute = ProcessandoRouteImport.update({
   id: '/processando',
   path: '/processando',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MulherRoute = MulherRouteImport.update({
+  id: '/mulher',
+  path: '/mulher',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomemRoute = HomemRouteImport.update({
+  id: '/homem',
+  path: '/homem',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -50,6 +62,8 @@ const ResultadoMockRoute = ResultadoMockRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
+  '/homem': typeof HomemRoute
+  '/mulher': typeof MulherRoute
   '/processando': typeof ProcessandoRoute
   '/produtos': typeof ProdutosRoute
   '/upload': typeof UploadRoute
@@ -58,6 +72,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
+  '/homem': typeof HomemRoute
+  '/mulher': typeof MulherRoute
   '/processando': typeof ProcessandoRoute
   '/produtos': typeof ProdutosRoute
   '/upload': typeof UploadRoute
@@ -67,6 +83,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
+  '/homem': typeof HomemRoute
+  '/mulher': typeof MulherRoute
   '/processando': typeof ProcessandoRoute
   '/produtos': typeof ProdutosRoute
   '/upload': typeof UploadRoute
@@ -77,6 +95,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/checkout'
+    | '/homem'
+    | '/mulher'
     | '/processando'
     | '/produtos'
     | '/upload'
@@ -85,6 +105,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/checkout'
+    | '/homem'
+    | '/mulher'
     | '/processando'
     | '/produtos'
     | '/upload'
@@ -93,6 +115,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/checkout'
+    | '/homem'
+    | '/mulher'
     | '/processando'
     | '/produtos'
     | '/upload'
@@ -102,6 +126,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CheckoutRoute: typeof CheckoutRoute
+  HomemRoute: typeof HomemRoute
+  MulherRoute: typeof MulherRoute
   ProcessandoRoute: typeof ProcessandoRoute
   ProdutosRoute: typeof ProdutosRoute
   UploadRoute: typeof UploadRoute
@@ -131,6 +157,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProcessandoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mulher': {
+      id: '/mulher'
+      path: '/mulher'
+      fullPath: '/mulher'
+      preLoaderRoute: typeof MulherRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/homem': {
+      id: '/homem'
+      path: '/homem'
+      fullPath: '/homem'
+      preLoaderRoute: typeof HomemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -158,6 +198,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CheckoutRoute: CheckoutRoute,
+  HomemRoute: HomemRoute,
+  MulherRoute: MulherRoute,
   ProcessandoRoute: ProcessandoRoute,
   ProdutosRoute: ProdutosRoute,
   UploadRoute: UploadRoute,
@@ -166,3 +208,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
