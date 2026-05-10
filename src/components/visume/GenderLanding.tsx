@@ -7,7 +7,7 @@ import { HowItWorks } from "./HowItWorks";
 import { ExampleShowcase } from "./ExampleShowcase";
 import { Differentials } from "./Differentials";
 import { ProductPricingCards } from "./ProductPricingCards";
-import { FAQSection } from "./FAQSection";
+
 import type { LandingContent } from "@/data/landingContent";
 
 export function GenderLanding({ content }: { content: LandingContent }) {
@@ -149,7 +149,7 @@ export function GenderLanding({ content }: { content: LandingContent }) {
         </div>
       </section>
 
-      <FAQSection />
+      
     </>
   );
 }
