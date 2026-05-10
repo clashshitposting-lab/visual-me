@@ -1,86 +1,84 @@
-## VisuMe — Melhoria do MVP: imagens de exemplo + PDF baixável
+# Plano — Duas landings por gênero, foco em visagismo
 
-Escopo restrito a `/resultado/mock` e componentes do relatório. Sem novas rotas, backend, IA, Supabase ou pagamento.
+## Objetivo
+Substituir a landing genérica por **duas páginas de venda específicas** — uma feminina e uma masculina — focadas no produto **Visagismo (análise de cores + formato de rosto)**. Cabelo/barba e combo continuam visíveis como upsell secundário. Ambas convertem para o mesmo fluxo: `/checkout → /upload → /processando → /resultado/mock`.
 
-### PARTE 1 — Imagens de exemplo
+## Rotas (mantém limite de rotas combinado)
+```
+/              → redireciona para /mulher (Navigate)
+/mulher        → landing feminina (nova)
+/homem         → landing masculina (nova)
+/produtos      → mantém (visagismo em destaque)
+/checkout      → mantém mockado
+/upload        → mantém
+/processando   → mantém
+/resultado/mock → mantém
+```
+Removo o conteúdo da `index.tsx` atual (LandingHero + seções) e transformo em redirect. As seções viram componentes reutilizáveis pelas duas novas landings.
 
-**Estratégia de imagens**: usar Unsplash com URLs determinísticas (`https://images.unsplash.com/photo-<id>?w=800&q=80&auto=format&fit=crop`) curadas — IDs fixos, não aleatórios, para evitar carregar pessoas inadequadas. Cada `<img>` tem `loading="lazy"`, `onError` que troca por um fallback gradient (mantém o layout) e selo "Imagem demonstrativa".
+## Estrutura de cada landing
+Mesmo layout base, **copy e imagens diferentes**:
 
-**Curadoria mínima** (5 retratos editoriais neutros + 8 de cabelo/barba) — IDs fixos definidos em `src/data/sampleImages.ts`:
-- `portraitMain` — 1 retrato editorial neutro para a foto principal.
-- `colorPortraits[5]` — 5 retratos para o carrossel "melhores cores".
-- `avoidPortraits[3]` — 3 retratos para "cores que pesam".
-- `haircuts[4]` e `beards[4]` — referências de corte/barba.
+1. **Hero específico do gênero**
+   - Headline + subhead com tom adequado
+   - CTA principal: "Começar minha análise de visagismo" → `/checkout?product=visagismo`
+   - CTA secundário: "Ver exemplo do relatório" → `/resultado/mock`
+   - Imagem hero modelo (feminino / masculino)
 
-**Componente `SampleImage`** (`src/components/visume/SampleImage.tsx`): wrapper `<img>` com fallback automático para `<div>` gradient quando `onError` dispara. Mantém aspect-ratio e selo opcional.
+2. **Como funciona** (3 passos — reaproveita `HowItWorks`)
+3. **O que você recebe** (foco em visagismo: paleta + formato de rosto + sugestões)
+4. **Prévia visual** (`ExampleShowcase` com imagens do gênero)
+5. **Diferenciais** (`Differentials`)
+6. **Produto principal: Visagismo** + card menor "Combo completo (com cabelo/barba)" como upsell
+7. **FAQ** (`FAQSection` — perguntas levemente ajustadas por gênero)
+8. **CTA final**
 
-**Atualizações**:
+## Produto "Visagismo"
+Adiciono novo produto em `src/data/products.ts`:
+- `id: "visagismo"`, nome "Análise de Visagismo", preço a definir (sugiro R$ 39,90), highlights focados em cores + formato de rosto.
+- Mantenho `cabelo` e `combo` como upsell.
+- `/produtos` reordena: Visagismo em destaque (featured), combo como upgrade.
 
-1. `ResultHeader.tsx` — substitui o placeholder atual pelo `SampleImage` (retrato editorial), mantém `MockBadge` "Foto exemplo" no canto.
+## Copy & tom (resumo)
 
-2. `VisualSimulationCarousel.tsx` — cada card vira:
-   - `SampleImage` de fundo (aspect 4/5).
-   - Overlay inferior com swatch da cor + nome + HEX.
-   - Tag "Combina"/"Evitar" no topo.
-   - Legenda: "Simulação placeholder" (good) ou "Exemplo demonstrativo" (avoid).
-   - Mantém o aviso "Imagem ilustrativa / placeholder. Futuramente a IA vai gerar essa simulação com a foto enviada."
-   - Itens passam a aceitar `imageUrl` opcional. `mockAnalysisResult.colorAnalysis.bestSimulation` e `avoidSimulation` ganham `imageUrl` apontando para os IDs curados.
+| | Feminino (/mulher) | Masculino (/homem) |
+|---|---|---|
+| Headline | "Descubra as cores e os traços que valorizam a sua beleza única" | "O visual certo pra impor presença sem esforço" |
+| Tom | acolhedor, sofisticado, empoderador | direto, confiante, prático |
+| Paleta de imagens | retratos femininos editoriais | retratos masculinos editoriais |
+| Prova social/copy | "milhares de mulheres" | "homens que querem evoluir o visual" |
+| Mantém marca | VisuMe, mesmas cores/tipografia | idem |
 
-3. `HairRecommendationCard.tsx` — adicionar `SampleImage` topo do card com aviso "Imagem ilustrativa. Na versão final, a IA gerará uma simulação com a foto enviada." Os 4 cortes e 4 barbas em `mockAnalysisResult.hairAnalysis` recebem `imageUrl`.
+## Arquivos
 
-### PARTE 2 — PDF baixável
+**Criar**
+- `src/routes/mulher.tsx`
+- `src/routes/homem.tsx`
+- `src/components/visume/GenderLanding.tsx` — componente compartilhado que recebe props (`gender`, `headline`, `subhead`, `heroImage`, `showcaseImages`, `ctaCopy`, etc.)
+- `src/data/landingContent.ts` — objeto com a copy de cada gênero
+- Adicionar URLs de imagens femininas/masculinas em `src/data/sampleImages.ts`
 
-**Biblioteca**: `jspdf` (pure JS, sem deps nativas, funciona no browser e é estável). Sem `html2canvas` — montaremos o PDF programaticamente para garantir layout limpo, leve e independente de fontes externas.
+**Editar**
+- `src/routes/index.tsx` → vira `<Navigate to="/mulher" replace />` com `head()` apontando metadata genérica VisuMe
+- `src/data/products.ts` → adicionar produto `visagismo` e marcar como featured
+- `src/components/visume/SiteHeader.tsx` → nav passa a ter "Para ela" / "Para ele" no lugar de links genéricos
+- `src/components/visume/ProductPricingCards.tsx` → destacar Visagismo
+- `src/components/visume/LandingHero.tsx` → refatorar para receber props e ser reutilizado pelo `GenderLanding`
 
-**Novo arquivo**: `src/lib/generateMockPdf.ts`
-- Função `generateMockPdf()` assíncrona.
-- Cria documento A4, fontes built-in (helvetica), paleta sóbria (azul petróleo `#1F5B5B`, vinho `#8A3F5C`, grafite `#2D3436`).
-- Helpers internos: `addHeading`, `addParagraph`, `addSwatchRow(colors[])`, `addBulletList`, `addPageIfNeeded(yCursor)`.
-- Lê dados de `mockAnalysisResult` para manter consistência com a tela.
+**Não mexer**
+- `/checkout`, `/upload`, `/processando`, `/resultado/mock` (mantêm fluxo atual)
+- Backend / Supabase / pagamento real (continua tudo mock)
 
-**Estrutura do PDF** (`visume-relatorio-exemplo.pdf`):
-1. **Capa**: faixa decorativa, "VisuMe", "Relatório visual personalizado", selo "Exemplo visual", parágrafo demonstrativo.
-2. **Resumo**: Combo Completo, Confiança Média, melhor direção visual.
-3. **Análise de cores**: estação, temperatura, intensidade, profundidade, contraste, subtom, paleta "ficam melhor" (swatches coloridos + nome + HEX), paleta "evitar".
-4. **Cabelo/Barba**: formato de rosto, textura, cortes recomendados, cortes a evitar, barbas recomendadas, box "Como pedir ao barbeiro".
-5. **Guia prático**: comprar, evitar, salão/barbeiro, checklist.
-6. **Rodapé fixo** em todas as páginas: aviso completo sobre simulações aproximadas + "VisuMe — exemplo demonstrativo" + paginação.
+## SEO
+Cada landing recebe `head()` próprio:
+- `/mulher`: title "Visagismo Feminino — VisuMe", description focada em mulher
+- `/homem`: title "Visagismo Masculino — VisuMe", description focada em homem
+- `/`: noindex + redirect
 
-### PARTE 3 — UX do botão
+## Mobile-first
+Mesmo padrão atual: layout em coluna no mobile, hero com imagem abaixo do texto, CTAs full-width até `sm:`.
 
-`PdfDownloadButton.tsx` e botão "Baixar PDF" do `ResultHeader.tsx` ganham:
-- Estado `isGenerating`.
-- Label muda para "Gerando PDF..." com spinner (`Loader2`) e fica `disabled`.
-- Sucesso: `toast.success("PDF baixado com sucesso.")`.
-- Erro: `toast.error("Não foi possível gerar o PDF agora. Tente novamente.")`.
-- Import dinâmico de `jspdf` (`await import("jspdf")`) para não inflar o bundle inicial.
-
-**Novo card informativo** ao lado do botão (em `ResultHeader.tsx` e/ou aba PDF): bloco compacto com ícone + "PDF demonstrativo disponível" + texto explicativo sobre versão final personalizada.
-
-### PARTE 4 — Escopo mantido
-
-Sem novas rotas, sem backend, sem auth, sem admin, sem histórico, sem pagamento real, sem IA, sem Supabase. Sem PDF Premium. Avisos de mock preservados em todos os pontos.
-
-### Arquivos afetados
-
-**Novos**
-- `src/components/visume/SampleImage.tsx`
-- `src/components/visume/PdfInfoCard.tsx`
-- `src/data/sampleImages.ts`
-- `src/lib/generateMockPdf.ts`
-
-**Editados**
-- `src/data/mockAnalysisResult.ts` — adiciona `imageUrl` em `bestSimulation`, `avoidSimulation`, `bestHaircuts`, `avoidHaircuts`, `beardStyles.recommended`.
-- `src/components/visume/ResultHeader.tsx` — foto principal real, botão com loading, info card.
-- `src/components/visume/VisualSimulationCarousel.tsx` — usa `SampleImage` + overlay swatch.
-- `src/components/visume/HairRecommendationCard.tsx` — imagem topo + aviso.
-- `src/components/visume/PdfDownloadButton.tsx` — estado de loading + chamada real.
-- `src/routes/resultado.mock.tsx` — passar nova prop / posicionar `PdfInfoCard` na aba PDF.
-
-### Dependências
-
-- Adicionar `jspdf` (`bun add jspdf`). Pure JS, ~200kb, sem nativos — compatível com o runtime do projeto e carregado dinamicamente apenas quando o usuário clica.
-
-### Resultado
-
-`/resultado/mock` fica mais editorial e visual com fotos exemplo claramente rotuladas, e o botão "Baixar PDF" gera de fato um arquivo `visume-relatorio-exemplo.pdf` bonito, com toasts de loading/sucesso/erro e card explicativo sobre o caráter demonstrativo.
+## Fora do escopo (próximas fases)
+- Integração real Kiwify (placeholder mantido como `/checkout` interno)
+- Backend / IA real / login
+- Variações de tipografia/paleta por gênero (mesma marca por enquanto)
