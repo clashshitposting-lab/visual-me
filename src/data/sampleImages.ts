@@ -30,4 +30,19 @@ export const sampleImages = {
     u("photo-1500648767791-00dcc994a43e"),
     u("photo-1463453091185-61582044d556"),
   ],
+  // Landing-specific
+  womanHero: u("photo-1531746020798-e6953c6e8e04", 1100),
+  womanShowcase: [
+    u("photo-1500917293891-ef795e70e1f6"),
+    u("photo-1508214751196-bcfd4ca60f91"),
+    u("photo-1488426862026-3ee34a7d66df"),
+    u("photo-1524504388940-b1c1722653e1"),
+  ],
+  manHero: u("photo-1500648767791-00dcc994a43e", 1100),
+  manShowcase: [
+    u("photo-1506794778202-cad84cf45f1d"),
+    u("photo-1519085360753-af0119f7cbe7"),
+    u("photo-1463453091185-61582044d556"),
+    u("photo-1488161628813-04466f872be2"),
+  ],
 };

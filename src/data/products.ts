@@ -1,5 +1,5 @@
 export type Product = {
-  id: "cores" | "cabelo" | "combo";
+  id: "visagismo" | "cores" | "cabelo" | "combo";
   name: string;
   price: number;
   short: string;
@@ -10,18 +10,19 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: "cores",
-    name: "Análise de Cores",
-    price: 34.9,
-    short: "Sua paleta personalizada",
+    id: "visagismo",
+    name: "Análise de Visagismo",
+    price: 39.9,
+    short: "Cores + formato de rosto que valorizam você",
     description:
-      "Descubra sua paleta, cores que valorizam, cores para evitar, neutros ideais, acentos e sugestões de roupas.",
+      "Sua paleta personalizada de cores e a leitura do seu formato de rosto, com sugestões visuais de estilo.",
     highlights: [
-      "Cartela com cores que valorizam",
+      "Paleta de cores que valorizam",
       "Cores a evitar",
-      "Neutros e acentos",
-      "Sugestões de roupas",
+      "Leitura do formato do rosto",
+      "Sugestões visuais de estilo",
     ],
+    featured: true,
   },
   {
     id: "cabelo",
@@ -41,15 +42,14 @@ export const products: Product[] = [
     id: "combo",
     name: "Combo Completo",
     price: 59.9,
-    short: "A experiência VisuMe completa",
-    description: "Inclui análise de cores + cabelo/barba em uma experiência completa.",
+    short: "Visagismo + Cabelo e Barba",
+    description: "A experiência VisuMe completa: visagismo + cabelo/barba em um só relatório.",
     highlights: [
-      "Análise de cores completa",
+      "Análise de visagismo completa",
       "Análise de cabelo e barba",
       "Guia prático",
       "PDF do relatório",
     ],
-    featured: true,
   },
 ];
 
