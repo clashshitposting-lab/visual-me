@@ -49,7 +49,7 @@ export function ProductPricingCards({
 
       <div className="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Card 2 (VisuMe) renderizado primeiro no DOM apenas em desktop via order */}
-        <div className="order-2 flex flex-col rounded-3xl border border-border/70 bg-muted/30 p-6 shadow-sm sm:p-7 lg:order-1">
+        <div className="order-1 flex flex-col rounded-3xl border border-border/70 bg-muted/30 p-6 shadow-sm sm:p-7 lg:order-1">
           <span className="inline-flex w-fit items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
             Referência de mercado
           </span>
@@ -87,7 +87,7 @@ export function ProductPricingCards({
 
         <div
           className={cn(
-            "relative order-1 flex flex-col rounded-3xl border-2 border-primary/50 bg-card p-6 shadow-lg ring-1 ring-primary/20 sm:p-7 lg:order-2",
+            "relative order-2 flex flex-col rounded-3xl border-2 border-primary/50 bg-card p-6 shadow-lg ring-1 ring-primary/20 sm:p-7 lg:order-2",
           )}
         >
           <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground shadow-sm">
