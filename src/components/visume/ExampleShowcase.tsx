@@ -29,7 +29,7 @@ const examples = [
   },
 ];
 
-export function ExampleShowcase() {
+export function ExampleShowcase({ showSampleLink = true }: { showSampleLink?: boolean } = {}) {
   return (
     <section className="bg-nude/30 py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -61,14 +61,16 @@ export function ExampleShowcase() {
           ))}
         </div>
 
-        <div className="mt-8 text-center">
-          <Link
-            to="/resultado/mock"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-card px-5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted"
-          >
-            Ver exemplo de relatório completo
-          </Link>
-        </div>
+        {showSampleLink && (
+          <div className="mt-8 text-center">
+            <Link
+              to="/resultado/mock"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-border bg-card px-5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted"
+            >
+              Ver exemplo de relatório completo
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
