@@ -1,9 +1,11 @@
+import type { ReactNode } from "react";
+
 export type Gender = "mulher" | "homem";
 
 export type LandingContent = {
   gender: Gender;
   eyebrow: string;
-  headline: React.ReactNode;
+  headline: ReactNode;
   subhead: string;
   ctaPrimary: string;
   ctaSecondary: string;
