@@ -12,7 +12,7 @@ export const products: Product[] = [
   {
     id: "visagismo",
     name: "Análise de Visagismo",
-    price: 39.9,
+    price: 67.0,
     short: "Cores + formato de rosto que valorizam você",
     description:
       "Sua paleta personalizada de cores e a leitura do seu formato de rosto, com sugestões visuais de estilo.",
