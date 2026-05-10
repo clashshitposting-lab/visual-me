@@ -5,7 +5,7 @@ import { products } from "@/data/products";
 import { SampleImage } from "./SampleImage";
 import { HowItWorks } from "./HowItWorks";
 import { ExampleShowcase } from "./ExampleShowcase";
-import { Differentials } from "./Differentials";
+
 import { ProductPricingCards } from "./ProductPricingCards";
 
 import type { LandingContent } from "@/data/landingContent";
@@ -98,7 +98,6 @@ export function GenderLanding({ content }: { content: LandingContent }) {
 
       <HowItWorks />
       <ExampleShowcase showSampleLink={false} />
-      <Differentials />
       <ProductPricingCards />
 
       {/* OBJEÇÕES */}
